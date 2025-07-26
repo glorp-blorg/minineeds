@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -25,7 +25,7 @@ const Index = () => {
   const [hasSearched, setHasSearched] = useState(false);
   const [showDiscountPopup, setShowDiscountPopup] = useState(false);
   const { machines, loading, error, searchMachines } = useVendingMachines();
-  const router = useRouter();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -192,9 +192,7 @@ const Index = () => {
                   <p className="text-muted-foreground mb-6">
                     We don't have any vending machines at this airport yet.
                   </p>
-                  <Button onClick={() => router.push("/request")}>
-                    Request a Machine Here
-                  </Button>
+                  <Button onClick={() => navigate("/request")}>Request a Machine Here</Button>
                 </CardContent>
               </Card>
             )}
