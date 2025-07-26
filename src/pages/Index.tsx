@@ -2,12 +2,14 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Clock, Package, Star, Plane, Baby, Search, Gift } from "lucide-react";
+import { MapPin, Clock, Package, Star, Plane, Baby, Search, Gift,Milk,Apple, } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import SearchBar from "@/components/SearchBar";
 import DiscountPopup from "@/components/DiscountPopup";
 import { useVendingMachines } from "@/hooks/useVendingMachines";
 import heroImage from "@/assets/new-hero.png";
+import sampleVendingMachine from "@/assets/sample_vending_machine.png";
+
 
 const Index = () => {
   const [hasSearched, setHasSearched] = useState(false);
@@ -29,10 +31,10 @@ const Index = () => {
   };
 
   const featuredSupplies = [
-    { icon: Baby, name: "Baby Formula", description: "Infant and toddler formulas" },
+    { icon: Milk, name: "Baby Formula", description: "Infant and toddler formulas" },
     { icon: Package, name: "Diapers", description: "Various sizes available" },
-    { icon: Package, name: "Baby Food", description: "Pouches and jars" },
-    { icon: Package, name: "Pacifiers", description: "Different sizes and styles" }
+    { icon: Apple, name: "Baby Food", description: "Pouches and jars" },
+    { icon: Gift, name: "Pacifiers", description: "Different sizes and styles" }
   ];
 
   return (
@@ -213,16 +215,23 @@ const Index = () => {
           </div>
         </div>
       </section>
-
-      
+      <section className="bg-primary py-12 px-4 mt-12 text-white">
+      <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="text-center md:text-left">
+          <h2 className="text-3xl font-bold mb-2">For all your Mini’s many needs!</h2>
+          <p className="text-white/90">Trusted baby essentials available when you need them most.</p>
+        </div>
+        <img 
+          src={sampleVendingMachine} 
+          alt="MiniNeeds Vending Machine" 
+          className="w-64 h-auto rounded shadow-lg"
+        />
+      </div>
+    </section>
       <DiscountPopup 
         isOpen={showDiscountPopup} 
         onClose={() => setShowDiscountPopup(false)} 
       />
-    <section className="bg-primary py-12 px-4 mt-12 text-white">
-  <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-    <div>
-      <h2 className="
     </div>
   );
 };

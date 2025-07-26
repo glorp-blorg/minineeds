@@ -35,12 +35,9 @@ export interface LocationRequest {
   created_at: string
 }
 
-export interface Supply {
+export interface ContactInformation {
   id: string
+  email: string
   name: string
-  description: string
-  category: string
-  price: number
-  stock_level: number
-  vending_machine_id: string
+  phone_number: string
 }

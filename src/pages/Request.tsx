@@ -28,7 +28,7 @@ const Request = () => {
     if (result) {
       toast({
         title: "Request submitted successfully!",
-        description: "We'll review your request and get back to you within 48 hours.",
+        description: "We'll review your request and get back to you if your request has been approved!",
       });
 
       setFormData({

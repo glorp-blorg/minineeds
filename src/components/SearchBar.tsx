@@ -2,7 +2,8 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, MapPin } from "lucide-react";
-
+import {insertEmail} from "@/lib/api"
+  
 interface SearchBarProps {
   onSearch?: (query: string) => void;
   placeholder?: string;

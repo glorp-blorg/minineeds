@@ -1,9 +1,8 @@
 import { supabase } from './supabase'
-import type { VendingMachine, LocationRequest, Supply } from './supabase'
+import type { VendingMachine, LocationRequest, ContactInformation } from './supabase'
 
 // Vending Machine API functions
 export const vendingMachineApi = {
-  // Get all vending machines
   async getAll(): Promise<VendingMachine[]> {
     const { data, error } = await supabase
       .from('vending_machine')
@@ -15,7 +14,6 @@ export const vendingMachineApi = {
     return data || []
   },
 
-  // Search vending machines by airport
   async searchByAirport(query: string): Promise<VendingMachine[]> {
     const { data, error } = await supabase
       .from('vending_machine')
@@ -27,7 +25,6 @@ export const vendingMachineApi = {
     return data || []
   },
 
-  // Get vending machine by ID
   async getById(id: string): Promise<VendingMachine | null> {
     const { data, error } = await supabase
       .from('vending_machine')
@@ -38,21 +35,16 @@ export const vendingMachineApi = {
     if (error) throw error
     return data
   }
-} // ✅ properly closed vendingMachineApi
+}
 
-// Location Request API functions
 export const locationRequestApi = {
-  // Submit a new location request
   async create(
     request: Omit<LocationRequest, 'id' | 'status' | 'created_at'>
   ): Promise<LocationRequest> {
     const { data, error } = await supabase
       .from('location_request')
       .insert([
-        {
-          ...request,
-          status: 'pending'
-        }
+        { ...request, status: 'pending' }
       ])
       .select()
       .single()
@@ -61,7 +53,6 @@ export const locationRequestApi = {
     return data
   },
 
-  // Get all location requests (admin function)
   async getAll(): Promise<LocationRequest[]> {
     const { data, error } = await supabase
       .from('location_request')
@@ -72,7 +63,6 @@ export const locationRequestApi = {
     return data || []
   },
 
-  // Update request status (admin function)
   async updateStatus(
     id: string,
     status: LocationRequest['status']
@@ -86,9 +76,7 @@ export const locationRequestApi = {
   }
 }
 
-// Analytics API functions
 export const analyticsApi = {
-  // Get popular airports
   async getPopularAirports(limit: number = 10) {
     const { data, error } = await supabase
       .from('vending_machine')
@@ -100,7 +88,6 @@ export const analyticsApi = {
     return data || []
   },
 
-  // Get request statistics
   async getRequestStats() {
     const { data, error } = await supabase
       .from('location_request')
@@ -122,9 +109,19 @@ export const analyticsApi = {
   }
 }
 
+// 💡 Moved outside and correctly structured
+export const insertEmail = async (email: string): Promise<ContactInformation[]> => {
+  const { data, error } = await supabase
+    .from('contact_information')
+    .insert([{ email }])
+    .select()
+
+  if (error) throw error
+  return data || []
+}
+
 // Real-time subscriptions
 export const subscriptions = {
-  // Subscribe to vending machine updates
   subscribeToMachines(callback: (payload: any) => void) {
     return supabase
       .channel('vending_machine')
@@ -136,7 +133,6 @@ export const subscriptions = {
       .subscribe()
   },
 
-  // Subscribe to location request updates
   subscribeToRequests(callback: (payload: any) => void) {
     return supabase
       .channel('location_request')
