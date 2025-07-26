@@ -14,7 +14,6 @@ const Request = () => {
     name: "",
     email: "",
     airport: "",
-    location: "",
     message: ""
   });
   const { toast } = useToast();
