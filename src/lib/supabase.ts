@@ -29,7 +29,6 @@ export interface LocationRequest {
   name: string
   email: string
   airport: string
-  location?: string
   message?: string
   status: 'pending' | 'approved' | 'rejected'
   created_at: string
