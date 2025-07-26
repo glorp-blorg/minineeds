@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, MapPin } from "lucide-react";
-import {insertEmail} from "@/lib/api"
+import { usePopularAirports } from "@/hooks/usePopularAirports";
   
 interface SearchBarProps {
   onSearch?: (query: string) => void;
@@ -16,6 +16,7 @@ const SearchBar = ({
   className = "" 
 }: SearchBarProps) => {
   const [query, setQuery] = useState("");
+  const { airports, loading: airportsLoading } = usePopularAirports(8);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,17 +24,6 @@ const SearchBar = ({
       onSearch(query.trim());
     }
   };
-
-  const mockAirports = [
-    "JFK - John F. Kennedy International",
-    "LAX - Los Angeles International",
-    "ORD - Chicago O'Hare International",
-    "ATL - Hartsfield-Jackson Atlanta International",
-    "DFW - Dallas/Fort Worth International",
-    "DEN - Denver International",
-    "SFO - San Francisco International",
-    "LAS - McCarran International"
-  ];
 
   return (
     <div className={`relative ${className}`}>
@@ -49,8 +39,8 @@ const SearchBar = ({
             list="airports"
           />
           <datalist id="airports">
-            {mockAirports.map((airport) => (
-              <option key={airport} value={airport} />
+            {!airportsLoading && airports.map((airport) => (
+              <option key={airport.airport_code} value={`${airport.airport_code} - ${airport.airport_name}`} />
             ))}
           </datalist>
         </div>

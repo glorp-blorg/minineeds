@@ -20,18 +20,23 @@ const DiscountPopup = ({ isOpen, onClose }: DiscountPopupProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    toast({
-      title: "Discount Code Sent!",
-      description: `Your 15% discount code has been sent to ${email}`,
-    });
-
-    setEmail("");
-    setIsSubmitting(false);
-    onClose();
+    try {
+      await insertEmail(email);
+      toast({
+        title: "Discount Code Sent!",
+        description: `Your 15% discount code has been sent to ${email}`,
+      });
+      setEmail("");
+      onClose();
+    } catch (err: any) {
+      toast({
+        title: "Failed to send discount code",
+        description: err?.message || "An error occurred. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (

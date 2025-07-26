@@ -7,6 +7,8 @@ import Navigation from "@/components/Navigation";
 import SearchBar from "@/components/SearchBar";
 import DiscountPopup from "@/components/DiscountPopup";
 import { useVendingMachines } from "@/hooks/useVendingMachines";
+import { useRequestStats } from "@/hooks/useRequestStats";
+import { useSupplyData } from "@/hooks/useSupplyData";
 import heroImage from "@/assets/new-hero.png";
 import sampleVendingMachine from "@/assets/sample_vending_machine.png";
 
@@ -15,6 +17,8 @@ const Index = () => {
   const [hasSearched, setHasSearched] = useState(false);
   const [showDiscountPopup, setShowDiscountPopup] = useState(false);
   const { machines, loading, error, searchMachines } = useVendingMachines();
+  const { stats } = useRequestStats();
+  const featuredSupplies = useSupplyData();
 
   // Show discount popup after 5 seconds
   useEffect(() => {
@@ -29,13 +33,6 @@ const Index = () => {
     setHasSearched(true);
     await searchMachines(query);
   };
-
-  const featuredSupplies = [
-    { icon: Milk, name: "Baby Formula", description: "Infant and toddler formulas" },
-    { icon: Package, name: "Diapers", description: "Various sizes available" },
-    { icon: Apple, name: "Baby Food", description: "Pouches and jars" },
-    { icon: Gift, name: "Pacifiers", description: "Different sizes and styles" }
-  ];
 
   return (
     <div className="min-h-screen bg-background">
@@ -74,7 +71,7 @@ const Index = () => {
           <div className="flex flex-wrap justify-center gap-4 text-white/80">
             <div className="flex items-center gap-2">
               <MapPin className="h-5 w-5" />
-              <span>50+ Airports</span>
+              <span>{machines.length}+ Airports</span>
             </div>
             <div className="flex items-center gap-2">
               <Clock className="h-5 w-5" />
@@ -203,7 +200,12 @@ const Index = () => {
           </div>
           
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {featuredSupplies.map((supply) => (
+            {(featuredSupplies.length > 0 ? featuredSupplies : [
+              { icon: Milk, name: "Baby Formula", description: "Infant and toddler formulas" },
+              { icon: Package, name: "Diapers", description: "Various sizes available" },
+              { icon: Apple, name: "Baby Food", description: "Pouches and jars" },
+              { icon: Gift, name: "Pacifiers", description: "Different sizes and styles" }
+            ]).map((supply) => (
               <Card key={supply.name} className="text-center hover:shadow-md transition-shadow">
                 <CardContent className="py-8">
                   <supply.icon className="h-12 w-12 text-primary mx-auto mb-4" />
