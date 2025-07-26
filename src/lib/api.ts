@@ -98,7 +98,7 @@ export const analyticsApi = {
   async getPopularAirports(limit: number = 10) {
     const { data, error } = await supabase
       .from('vending_machine')
-      .select('airport_code, airport_name, rating')
+      .select('airport_code, airport_name')
       .eq('status', 'active')
       .order('rating', { ascending: false })
       .limit(limit)
