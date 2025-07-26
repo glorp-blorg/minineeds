@@ -9,13 +9,13 @@ import DiscountPopup from "@/components/DiscountPopup";
 import { useVendingMachines } from "@/hooks/useVendingMachines";
 import heroImage from "@/assets/new-hero.png";
 import sampleVendingMachine from "@/assets/sample_vending_machine.png";
-
+import { useRouter } from "next/router"
 
 const Index = () => {
   const [hasSearched, setHasSearched] = useState(false);
   const [showDiscountPopup, setShowDiscountPopup] = useState(false);
   const { machines, loading, error, searchMachines } = useVendingMachines();
-
+const router = useRouter()
   // Show discount popup after 5 seconds
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -182,7 +182,7 @@ const handleSearch = async (query: string) => {
                   <p className="text-muted-foreground mb-6">
                     We don't have any vending machines at this airport yet.
                   </p>
-                  <Button>
+                  <Button onClick={() => router.push("/request")}>
                     Request a Machine Here
                   </Button>
                 </CardContent>
