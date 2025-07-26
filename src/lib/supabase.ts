@@ -16,9 +16,6 @@ export interface VendingMachine {
   airport_name: string
   terminal: string
   location: string
-  hours: string
-  supplies: string[]
-  rating: number
   status: 'active' | 'maintenance' | 'inactive'
   created_at: string
   updated_at: string
