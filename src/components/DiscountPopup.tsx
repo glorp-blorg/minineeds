@@ -30,7 +30,7 @@ const DiscountPopup = ({ isOpen, onClose }: DiscountPopupProps) => {
     });
 
     setEmail("");
-    setIsSubmitting(false);
+    setIsSubmitting(true);
     onClose();
   };
 
