@@ -1,5 +1,6 @@
-import { useState } from 'react';
-import { vendingMachineApi } from '@/lib/api';
+import { useState, useEffect } from 'react'
+import { vendingMachineApi } from '@/lib/api'
+import type { VendingMachine } from '@/lib/supabase'
 
 export const useVendingMachines = () => {
   const [machines, setMachines] = useState([]);
