@@ -1,15 +1,26 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Clock, Package, Star, Plane, Baby, Search } from "lucide-react";
+import { MapPin, Clock, Package, Star, Plane, Baby, Search, Gift } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import SearchBar from "@/components/SearchBar";
+import DiscountPopup from "@/components/DiscountPopup";
 import heroImage from "@/assets/hero-airport.jpg";
 
 const Index = () => {
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [hasSearched, setHasSearched] = useState(false);
+  const [showDiscountPopup, setShowDiscountPopup] = useState(false);
+
+  // Show discount popup after 5 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowDiscountPopup(true);
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   // Mock vending machine data
   const mockVendingMachines = [
@@ -73,8 +84,17 @@ const Index = () => {
             We've Got You. Find vending machines with emergency baby supplies in major airports worldwide.
           </p>
           
-          <div className="max-w-2xl mx-auto">
-            <SearchBar onSearch={handleSearch} className="mb-8" />
+          <div className="max-w-2xl mx-auto mb-8">
+            <SearchBar onSearch={handleSearch} className="mb-6" />
+            <Button 
+              onClick={() => setShowDiscountPopup(true)}
+              variant="secondary"
+              size="lg"
+              className="bg-white/10 text-white border border-white/20 hover:bg-white/20"
+            >
+              <Gift className="mr-2 h-4 w-4" />
+              Get 15% Off Discount Code
+            </Button>
           </div>
           
           <div className="flex flex-wrap justify-center gap-4 text-white/80">
@@ -194,18 +214,11 @@ const Index = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-16 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl font-bold mb-4">Don't See Your Airport?</h2>
-          <p className="text-xl text-muted-foreground mb-8">
-            Help us expand our network by requesting a vending machine at your preferred location.
-          </p>
-          <Button size="lg">
-            Request a Location
-          </Button>
-        </div>
-      </section>
+      
+      <DiscountPopup 
+        isOpen={showDiscountPopup} 
+        onClose={() => setShowDiscountPopup(false)} 
+      />
     </div>
   );
 };
