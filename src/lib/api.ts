@@ -37,18 +37,23 @@ export const vendingMachineApi = {
 
     if (error) throw error
     return data
-  },
+  }
+} // ✅ properly closed vendingMachineApi
 
 // Location Request API functions
 export const locationRequestApi = {
   // Submit a new location request
-  async create(request: Omit<LocationRequest, 'id' | 'status' | 'created_at'>): Promise<LocationRequest> {
+  async create(
+    request: Omit<LocationRequest, 'id' | 'status' | 'created_at'>
+  ): Promise<LocationRequest> {
     const { data, error } = await supabase
       .from('location_request')
-      .insert([{
-        ...request,
-        status: 'pending'
-      }])
+      .insert([
+        {
+          ...request,
+          status: 'pending'
+        }
+      ])
       .select()
       .single()
 
@@ -68,7 +73,10 @@ export const locationRequestApi = {
   },
 
   // Update request status (admin function)
-  async updateStatus(id: string, status: LocationRequest['status']): Promise<void> {
+  async updateStatus(
+    id: string,
+    status: LocationRequest['status']
+  ): Promise<void> {
     const { error } = await supabase
       .from('location_request')
       .update({ status })
@@ -77,8 +85,6 @@ export const locationRequestApi = {
     if (error) throw error
   }
 }
-
-// Supply API function
 
 // Analytics API functions
 export const analyticsApi = {
@@ -122,8 +128,9 @@ export const subscriptions = {
   subscribeToMachines(callback: (payload: any) => void) {
     return supabase
       .channel('vending_machine')
-      .on('postgres_changes', 
-        { event: '*', schema: 'public', table: 'vending_machine' }, 
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'vending_machine' },
         callback
       )
       .subscribe()
@@ -133,8 +140,9 @@ export const subscriptions = {
   subscribeToRequests(callback: (payload: any) => void) {
     return supabase
       .channel('location_request')
-      .on('postgres_changes', 
-        { event: '*', schema: 'public', table: 'location_request' }, 
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'location_request' },
         callback
       )
       .subscribe()
