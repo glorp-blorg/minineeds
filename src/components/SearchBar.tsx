@@ -17,7 +17,7 @@ import {
 import Navigation from "@/components/Navigation";
 import SearchBar from "@/components/SearchBar";
 import DiscountPopup from "@/components/DiscountPopup";
-import { supabase } from "@/lib/supabaseClient";
+import { supabase } from "@/lib/supabase";
 import heroImage from "@/assets/new-hero.png";
 import sampleVendingMachine from "@/assets/sample_vending_machine.png";
 
