@@ -22,7 +22,6 @@ export const vendingMachineApi = {
       .select('*')
       .or(`airport_code.ilike.%${query}%,airport_name.ilike.%${query}%`)
       .eq('status', 'active')
-      .order('rating', { ascending: false })
 
     if (error) throw error
     return data || []
@@ -39,17 +38,6 @@ export const vendingMachineApi = {
     if (error) throw error
     return data
   },
-
-  // Update vending machine rating
-  async updateRating(id: string, rating: number): Promise<void> {
-    const { error } = await supabase
-      .from('vending_machine')
-      .update({ rating })
-      .eq('id', id)
-
-    if (error) throw error
-  }
-}
 
 // Location Request API functions
 export const locationRequestApi = {
@@ -100,7 +88,6 @@ export const analyticsApi = {
       .from('vending_machine')
       .select('airport_code, airport_name')
       .eq('status', 'active')
-      .order('rating', { ascending: false })
       .limit(limit)
 
     if (error) throw error
