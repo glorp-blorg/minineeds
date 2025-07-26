@@ -2,12 +2,10 @@ import { Button } from "@/components/ui/button";
 import { Plane, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { useRequestStats } from "@/hooks/useRequestStats";
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
-  const { stats } = useRequestStats();
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -41,11 +39,9 @@ const Navigation = () => {
             >
               Request Location
             </Link>
-            <Link to="/request">
-              <Button size="sm">
-                Request a Machine
-              </Button>
-            </Link>
+            <Button size="sm">
+              Find a Location
+            </Button>
           </div>
 
           {/* Mobile menu button */}

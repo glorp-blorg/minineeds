@@ -16,8 +16,6 @@ export interface VendingMachine {
   airport_name: string
   terminal: string
   location: string
-  hours: string
-  rating: number
   status: 'active' | 'maintenance' | 'inactive'
   created_at: string
   updated_at: string
@@ -28,7 +26,6 @@ export interface LocationRequest {
   name: string
   email: string
   airport: string
-  location?: string
   message?: string
   status: 'pending' | 'approved' | 'rejected'
   created_at: string

@@ -1,56 +1,246 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Search, MapPin } from "lucide-react";
-import { usePopularAirports } from "@/hooks/usePopularAirports";
-  
-interface SearchBarProps {
-  onSearch?: (query: string) => void;
-  placeholder?: string;
-  className?: string;
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  MapPin,
+  Clock,
+  Package,
+  Star,
+  Plane,
+  Search,
+  Gift,
+  Milk,
+  Apple
+} from "lucide-react";
+import Navigation from "@/components/Navigation";
+import SearchBar from "@/components/SearchBar";
+import DiscountPopup from "@/components/DiscountPopup";
+import { supabase } from "@/lib/supabase";
+import heroImage from "@/assets/new-hero.png";
+import sampleVendingMachine from "@/assets/sample_vending_machine.png";
+
+interface VendingMachine {
+  id: string;
+  airport_code: string;
+  airport_name: string;
+  terminal: string;
+  location: string;
+  status: 'active' | 'maintenance' | 'inactive';
+  created_at: string;
+  updated_at: string;
+  rating?: number;
+  hours?: string;
+  supplies?: string[];
 }
 
-const SearchBar = ({ 
-  onSearch, 
-  placeholder = "Enter airport name or code (e.g., JFK, LAX)", 
-  className = "" 
-}: SearchBarProps) => {
-  const [query, setQuery] = useState("");
-  const { airports, loading: airportsLoading } = usePopularAirports(8);
+const Index = () => {
+  const [hasSearched, setHasSearched] = useState(false);
+  const [showDiscountPopup, setShowDiscountPopup] = useState(false);
+  const [machines, setMachines] = useState<VendingMachine[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (query.trim() && onSearch) {
-      onSearch(query.trim());
+  useEffect(() => {
+    const timer = setTimeout(() => setShowDiscountPopup(true), 5000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleSearch = async (query: string) => {
+    if (!query) return;
+
+    setHasSearched(true);
+    setLoading(true);
+    setError("");
+    setMachines([]);
+
+    try {
+      const { data, error } = await supabase
+        .from("VendingMachine")
+        .select("*")
+        .or(`airport_code.ilike.%${query}%,airport_name.ilike.%${query}%`);
+
+      if (error) throw error;
+      if (!Array.isArray(data)) throw new Error("Invalid data format");
+
+      setMachines(data);
+    } catch (err: any) {
+      setError(err.message || "Something went wrong");
+    } finally {
+      setLoading(false);
     }
   };
 
+  const featuredSupplies = [
+    { icon: Milk, name: "Baby Formula", description: "Infant and toddler formulas" },
+    { icon: Package, name: "Diapers", description: "Various sizes available" },
+    { icon: Apple, name: "Baby Food", description: "Pouches and jars" },
+    { icon: Gift, name: "Pacifiers", description: "Different sizes and styles" }
+  ];
+
   return (
-    <div className={`relative ${className}`}>
-      <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
-        <div className="relative flex-1">
-          <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
-          <Input
-            type="text"
-            placeholder={placeholder}
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            className="pl-10 h-12 text-base"
-            list="airports"
-          />
-          <datalist id="airports">
-            {!airportsLoading && airports.map((airport) => (
-              <option key={airport.airport_code} value={`${airport.airport_code} - ${airport.airport_name}`} />
-            ))}
-          </datalist>
+    <div className="min-h-screen bg-background">
+      <Navigation />
+
+      <section className="relative py-20 px-4 overflow-hidden">
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${heroImage})` }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/90 to-primary/70" />
         </div>
-        <Button type="submit" size="lg" className="h-12 px-8">
-          <Search className="mr-2 h-5 w-5" />
-          Find Supplies
-        </Button>
-      </form>
+
+        <div className="relative max-w-6xl mx-auto text-center">
+          <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
+            Need Baby Supplies at the Airport?
+          </h1>
+          <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-3xl mx-auto">
+            We've Got You. Find vending machines with emergency baby supplies in major airports worldwide.
+          </p>
+
+          <div className="max-w-2xl mx-auto mb-8">
+            <SearchBar onSearch={handleSearch} className="mb-6" />
+            <Button
+              onClick={() => setShowDiscountPopup(true)}
+              variant="secondary"
+              size="lg"
+              className="bg-white/10 text-white border border-white/20 hover:bg-white/20"
+            >
+              <Gift className="mr-2 h-4 w-4" />
+              Get 15% Off Discount Code
+            </Button>
+          </div>
+
+          <div className="flex flex-wrap justify-center gap-4 text-white/80">
+            <div className="flex items-center gap-2">
+              <MapPin className="h-5 w-5" />
+              <span>50+ Airports</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Clock className="h-5 w-5" />
+              <span>24/7 Availability</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Package className="h-5 w-5" />
+              <span>Essential Supplies</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Search Results */}
+      {hasSearched && (
+        <section className="py-12 px-4">
+          <div className="max-w-6xl mx-auto">
+            <h2 className="text-3xl font-bold mb-8">
+              {loading
+                ? "Searching..."
+                : machines.length > 0
+                ? "Vending Machines Found"
+                : "No Results Found"}
+            </h2>
+
+            {error && (
+              <Card className="mb-6">
+                <CardContent className="py-6">
+                  <p className="text-destructive">Error: {error}</p>
+                </CardContent>
+              </Card>
+            )}
+
+            {!loading && machines.length > 0 && (
+              <div className="grid md:grid-cols-2 gap-6">
+                {machines.map((machine) => (
+                  <Card key={machine.id} className="hover:shadow-lg transition-shadow">
+                    <CardHeader>
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <CardTitle className="flex items-center gap-2">
+                            <Plane className="h-5 w-5 text-primary" />
+                            {machine.airport_code} - {machine.terminal}
+                          </CardTitle>
+                          <CardDescription className="flex items-center gap-2 mt-2">
+                            <MapPin className="h-4 w-4" />
+                            {machine.location}
+                          </CardDescription>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                          <span className="text-sm font-medium">{machine.rating ?? "N/A"}</span>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Clock className="h-4 w-4" />
+                          {machine.hours ?? "N/A"}
+                        </div>
+
+                        <div>
+                          <p className="text-sm font-medium mb-2">Available Supplies:</p>
+                          <div className="flex flex-wrap gap-2">
+                            {(machine.supplies ?? []).map((supply: string) => (
+                              <Badge key={supply} variant="secondary">
+                                {supply}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+
+                        <p className="text-sm text-muted-foreground">{machine.airport_name}</p>
+
+                        <Button className="w-full">Get Directions</Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+
+            {!loading && machines.length === 0 && !error && (
+              <Card>
+                <CardContent className="py-12 text-center">
+                  <Search className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold mb-2">No vending machines found</h3>
+                  <p className="text-muted-foreground mb-6">
+                    We don't have any vending machines at this airport yet.
+                  </p>
+                  <Button onClick={() => navigate("/request")}>
+                    Request a Machine Here
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* Promo Section */}
+      <section className="bg-primary py-12 px-4 mt-12 text-white">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="text-center md:text-left">
+            <h2 className="text-3xl font-bold mb-2">For all your Mini’s many needs!</h2>
+            <p className="text-white/90">
+              Trusted baby essentials available when you need them most.
+            </p>
+          </div>
+          <img
+            src={sampleVendingMachine}
+            alt="MiniNeeds Vending Machine"
+            className="w-64 h-auto rounded shadow-lg"
+          />
+        </div>
+      </section>
+
+      <DiscountPopup
+        isOpen={showDiscountPopup}
+        onClose={() => setShowDiscountPopup(false)}
+      />
     </div>
   );
 };
 
-export default SearchBar;
+export default Index;

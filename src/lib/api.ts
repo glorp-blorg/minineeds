@@ -18,7 +18,7 @@ export const vendingMachineApi = {
     const { data, error } = await supabase
       .from('vending_machine')
       .select('*')
-      .or(`airport_code.ilike.%${query}%`)
+      .or(`airport_code.ilike.%${query}%,airport_name.ilike.%${query}%`)
       .eq('status', 'active')
 
     if (error) throw error

@@ -1,26 +1,32 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Clock, Package, Star, Plane, Baby, Search, Gift,Milk,Apple, } from "lucide-react";
+import {
+  MapPin,
+  Clock,
+  Package,
+  Star,
+  Plane,
+  Search,
+  Gift,
+  Milk,
+  Apple
+} from "lucide-react";
 import Navigation from "@/components/Navigation";
 import SearchBar from "@/components/SearchBar";
 import DiscountPopup from "@/components/DiscountPopup";
 import { useVendingMachines } from "@/hooks/useVendingMachines";
-import { useRequestStats } from "@/hooks/useRequestStats";
-import { useSupplyData } from "@/hooks/useSupplyData";
 import heroImage from "@/assets/new-hero.png";
 import sampleVendingMachine from "@/assets/sample_vending_machine.png";
-
 
 const Index = () => {
   const [hasSearched, setHasSearched] = useState(false);
   const [showDiscountPopup, setShowDiscountPopup] = useState(false);
   const { machines, loading, error, searchMachines } = useVendingMachines();
-  const { stats } = useRequestStats();
-  const featuredSupplies = useSupplyData();
+  const navigate = useNavigate();
 
-  // Show discount popup after 5 seconds
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowDiscountPopup(true);
@@ -34,19 +40,26 @@ const Index = () => {
     await searchMachines(query);
   };
 
+  const featuredSupplies = [
+    { icon: Milk, name: "Baby Formula", description: "Infant and toddler formulas" },
+    { icon: Package, name: "Diapers", description: "Various sizes available" },
+    { icon: Apple, name: "Baby Food", description: "Pouches and jars" },
+    { icon: Gift, name: "Pacifiers", description: "Different sizes and styles" }
+  ];
+
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
-      
+
       {/* Hero Section */}
       <section className="relative py-20 px-4 overflow-hidden">
-        <div 
+        <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: `url(${heroImage})` }}
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/90 to-primary/70"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/90 to-primary/70" />
         </div>
-        
+
         <div className="relative max-w-6xl mx-auto text-center">
           <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
             Need Baby Supplies at the Airport?
@@ -54,10 +67,10 @@ const Index = () => {
           <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-3xl mx-auto">
             We've Got You. Find vending machines with emergency baby supplies in major airports worldwide.
           </p>
-          
+
           <div className="max-w-2xl mx-auto mb-8">
             <SearchBar onSearch={handleSearch} className="mb-6" />
-            <Button 
+            <Button
               onClick={() => setShowDiscountPopup(true)}
               variant="secondary"
               size="lg"
@@ -67,11 +80,11 @@ const Index = () => {
               Get 15% Off Discount Code
             </Button>
           </div>
-          
+
           <div className="flex flex-wrap justify-center gap-4 text-white/80">
             <div className="flex items-center gap-2">
               <MapPin className="h-5 w-5" />
-              <span>{machines.length}+ Airports</span>
+              <span>50+ Airports</span>
             </div>
             <div className="flex items-center gap-2">
               <Clock className="h-5 w-5" />
@@ -90,9 +103,13 @@ const Index = () => {
         <section className="py-12 px-4">
           <div className="max-w-6xl mx-auto">
             <h2 className="text-3xl font-bold mb-8">
-              {loading ? "Searching..." : machines.length > 0 ? "Vending Machines Found" : "No Results Found"}
+              {loading
+                ? "Searching..."
+                : machines.length > 0
+                ? "Vending Machines Found"
+                : "No Results Found"}
             </h2>
-            
+
             {error && (
               <Card className="mb-6">
                 <CardContent className="py-6">
@@ -100,7 +117,7 @@ const Index = () => {
                 </CardContent>
               </Card>
             )}
-            
+
             {loading ? (
               <div className="grid md:grid-cols-2 gap-6">
                 {[1, 2].map((i) => (
@@ -147,7 +164,7 @@ const Index = () => {
                           <Clock className="h-4 w-4" />
                           {machine.hours}
                         </div>
-                        
+
                         <div>
                           <p className="text-sm font-medium mb-2">Available Supplies:</p>
                           <div className="flex flex-wrap gap-2">
@@ -158,14 +175,10 @@ const Index = () => {
                             ))}
                           </div>
                         </div>
-                        
-                        <p className="text-sm text-muted-foreground">
-                          {machine.airport_name}
-                        </p>
-                        
-                        <Button className="w-full">
-                          Get Directions
-                        </Button>
+
+                        <p className="text-sm text-muted-foreground">{machine.airport_name}</p>
+
+                        <Button className="w-full">Get Directions</Button>
                       </div>
                     </CardContent>
                   </Card>
@@ -179,9 +192,7 @@ const Index = () => {
                   <p className="text-muted-foreground mb-6">
                     We don't have any vending machines at this airport yet.
                   </p>
-                  <Button>
-                    Request a Machine Here
-                  </Button>
+                  <Button onClick={() => navigate("/request")}>Request a Machine Here</Button>
                 </CardContent>
               </Card>
             )}
@@ -198,14 +209,9 @@ const Index = () => {
               Our vending machines are stocked with everything you might need for your little one.
             </p>
           </div>
-          
+
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {(featuredSupplies.length > 0 ? featuredSupplies : [
-              { icon: Milk, name: "Baby Formula", description: "Infant and toddler formulas" },
-              { icon: Package, name: "Diapers", description: "Various sizes available" },
-              { icon: Apple, name: "Baby Food", description: "Pouches and jars" },
-              { icon: Gift, name: "Pacifiers", description: "Different sizes and styles" }
-            ]).map((supply) => (
+            {featuredSupplies.map((supply) => (
               <Card key={supply.name} className="text-center hover:shadow-md transition-shadow">
                 <CardContent className="py-8">
                   <supply.icon className="h-12 w-12 text-primary mx-auto mb-4" />
@@ -217,22 +223,28 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      {/* Promo Section */}
       <section className="bg-primary py-12 px-4 mt-12 text-white">
-      <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-        <div className="text-center md:text-left">
-          <h2 className="text-3xl font-bold mb-2">For all your Mini’s many needs!</h2>
-          <p className="text-white/90">Trusted baby essentials available when you need them most.</p>
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="text-center md:text-left">
+            <h2 className="text-3xl font-bold mb-2">For all your Mini’s many needs!</h2>
+            <p className="text-white/90">
+              Trusted baby essentials available when you need them most.
+            </p>
+          </div>
+          <img
+            src={sampleVendingMachine}
+            alt="MiniNeeds Vending Machine"
+            className="w-64 h-auto rounded shadow-lg"
+          />
         </div>
-        <img 
-          src={sampleVendingMachine} 
-          alt="MiniNeeds Vending Machine" 
-          className="w-64 h-auto rounded shadow-lg"
-        />
-      </div>
-    </section>
-      <DiscountPopup 
-        isOpen={showDiscountPopup} 
-        onClose={() => setShowDiscountPopup(false)} 
+      </section>
+
+      {/* Discount Modal */}
+      <DiscountPopup
+        isOpen={showDiscountPopup}
+        onClose={() => setShowDiscountPopup(false)}
       />
     </div>
   );

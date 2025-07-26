@@ -14,7 +14,6 @@ const Request = () => {
     name: "",
     email: "",
     airport: "",
-    location: "",
     message: ""
   });
   const { toast } = useToast();
@@ -122,17 +121,6 @@ const Request = () => {
                     onChange={handleInputChange}
                     required
                     placeholder="e.g., JFK, Los Angeles International, ORD"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="location">Preferred Location (Optional)</Label>
-                  <Input
-                    id="location"
-                    name="location"
-                    value={formData.location}
-                    onChange={handleInputChange}
-                    placeholder="e.g., Terminal A, Gate 15, Food Court"
                   />
                 </div>
 
