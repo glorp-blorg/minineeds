@@ -219,6 +219,10 @@ const Index = () => {
         isOpen={showDiscountPopup} 
         onClose={() => setShowDiscountPopup(false)} 
       />
+    <section className="bg-primary py-12 px-4 mt-12 text-white">
+  <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+    <div>
+      <h2 className="
     </div>
   );
 };
