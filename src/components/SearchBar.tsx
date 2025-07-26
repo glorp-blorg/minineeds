@@ -32,7 +32,8 @@ const SearchBar = ({
     "DFW - Dallas/Fort Worth International",
     "DEN - Denver International",
     "SFO - San Francisco International",
-    "LAS - McCarran International"
+    "LAS - McCarran International",
+    "TUL - Tulsa International"
   ];
 
   return (
