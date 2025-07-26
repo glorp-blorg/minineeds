@@ -25,10 +25,10 @@ const Index = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  const handleSearch = async (query: string) => {
-    setHasSearched(true);
-    await searchMachines(query);
-  };
+const handleSearch = async (query: string) => {
+  setHasSearched(true);
+  await searchMachines(query);
+};
 
   const featuredSupplies = [
     { icon: Milk, name: "Baby Formula", description: "Infant and toddler formulas" },
