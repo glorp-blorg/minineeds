@@ -7,7 +7,7 @@ import Navigation from "@/components/Navigation";
 import SearchBar from "@/components/SearchBar";
 import DiscountPopup from "@/components/DiscountPopup";
 import { useVendingMachines } from "@/hooks/useVendingMachines";
-import heroImage from "@/assets/hero-airport.jpg";
+import heroImage from "@/assets/new-hero.jpg";
 
 const Index = () => {
   const [hasSearched, setHasSearched] = useState(false);
