@@ -6,7 +6,7 @@ export const vendingMachineApi = {
   // Get all vending machines
   async getAll(): Promise<VendingMachine[]> {
     const { data, error } = await supabase
-      .from('vending_machines')
+      .from('vending_machine')
       .select('*')
       .eq('status', 'active')
       .order('created_at', { ascending: false })
@@ -18,7 +18,7 @@ export const vendingMachineApi = {
   // Search vending machines by airport
   async searchByAirport(query: string): Promise<VendingMachine[]> {
     const { data, error } = await supabase
-      .from('vending_machines')
+      .from('vending_machine')
       .select('*')
       .or(`airport_code.ilike.%${query}%,airport_name.ilike.%${query}%`)
       .eq('status', 'active')
@@ -31,7 +31,7 @@ export const vendingMachineApi = {
   // Get vending machine by ID
   async getById(id: string): Promise<VendingMachine | null> {
     const { data, error } = await supabase
-      .from('vending_machines')
+      .from('vending_machine')
       .select('*')
       .eq('id', id)
       .single()
@@ -43,7 +43,7 @@ export const vendingMachineApi = {
   // Update vending machine rating
   async updateRating(id: string, rating: number): Promise<void> {
     const { error } = await supabase
-      .from('vending_machines')
+      .from('vending_machine')
       .update({ rating })
       .eq('id', id)
 
@@ -56,7 +56,7 @@ export const locationRequestApi = {
   // Submit a new location request
   async create(request: Omit<LocationRequest, 'id' | 'status' | 'created_at'>): Promise<LocationRequest> {
     const { data, error } = await supabase
-      .from('location_requests')
+      .from('location_request')
       .insert([{
         ...request,
         status: 'pending'
@@ -71,7 +71,7 @@ export const locationRequestApi = {
   // Get all location requests (admin function)
   async getAll(): Promise<LocationRequest[]> {
     const { data, error } = await supabase
-      .from('location_requests')
+      .from('location_request')
       .select('*')
       .order('created_at', { ascending: false })
 
@@ -82,7 +82,7 @@ export const locationRequestApi = {
   // Update request status (admin function)
   async updateStatus(id: string, status: LocationRequest['status']): Promise<void> {
     const { error } = await supabase
-      .from('location_requests')
+      .from('location_request')
       .update({ status })
       .eq('id', id)
 
@@ -90,49 +90,14 @@ export const locationRequestApi = {
   }
 }
 
-// Supply API functions
-export const supplyApi = {
-  // Get supplies for a vending machine
-  async getByMachineId(machineId: string): Promise<Supply[]> {
-    const { data, error } = await supabase
-      .from('supplies')
-      .select('*')
-      .eq('vending_machine_id', machineId)
-      .order('category', { ascending: true })
-
-    if (error) throw error
-    return data || []
-  },
-
-  // Update supply stock level
-  async updateStock(id: string, stockLevel: number): Promise<void> {
-    const { error } = await supabase
-      .from('supplies')
-      .update({ stock_level: stockLevel })
-      .eq('id', id)
-
-    if (error) throw error
-  },
-
-  // Get low stock supplies
-  async getLowStock(threshold: number = 5): Promise<Supply[]> {
-    const { data, error } = await supabase
-      .from('supplies')
-      .select('*, vending_machines(*)')
-      .lt('stock_level', threshold)
-      .order('stock_level', { ascending: true })
-
-    if (error) throw error
-    return data || []
-  }
-}
+// Supply API function
 
 // Analytics API functions
 export const analyticsApi = {
   // Get popular airports
   async getPopularAirports(limit: number = 10) {
     const { data, error } = await supabase
-      .from('vending_machines')
+      .from('vending_machine')
       .select('airport_code, airport_name, rating')
       .eq('status', 'active')
       .order('rating', { ascending: false })
@@ -145,7 +110,7 @@ export const analyticsApi = {
   // Get request statistics
   async getRequestStats() {
     const { data, error } = await supabase
-      .from('location_requests')
+      .from('location_request')
       .select('status')
 
     if (error) throw error
@@ -169,9 +134,9 @@ export const subscriptions = {
   // Subscribe to vending machine updates
   subscribeToMachines(callback: (payload: any) => void) {
     return supabase
-      .channel('vending_machines')
+      .channel('vending_machine')
       .on('postgres_changes', 
-        { event: '*', schema: 'public', table: 'vending_machines' }, 
+        { event: '*', schema: 'public', table: 'vending_machine' }, 
         callback
       )
       .subscribe()
@@ -180,9 +145,9 @@ export const subscriptions = {
   // Subscribe to location request updates
   subscribeToRequests(callback: (payload: any) => void) {
     return supabase
-      .channel('location_requests')
+      .channel('location_request')
       .on('postgres_changes', 
-        { event: '*', schema: 'public', table: 'location_requests' }, 
+        { event: '*', schema: 'public', table: 'location_request' }, 
         callback
       )
       .subscribe()
