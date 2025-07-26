@@ -167,40 +167,6 @@ const Request = () => {
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>What Happens Next?</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-medium">
-                    1
-                  </div>
-                  <div>
-                    <p className="font-medium">Review Process</p>
-                    <p className="text-sm text-muted-foreground">We'll review your request within 48 hours</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-medium">
-                    2
-                  </div>
-                  <div>
-                    <p className="font-medium">Location Assessment</p>
-                    <p className="text-sm text-muted-foreground">We'll assess the feasibility and demand</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-medium">
-                    3
-                  </div>
-                  <div>
-                    <p className="font-medium">Installation Planning</p>
-                    <p className="text-sm text-muted-foreground">If approved, we'll work with the airport for installation</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
           </div>
         </div>
       </div>
