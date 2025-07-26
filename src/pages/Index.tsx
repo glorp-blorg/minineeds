@@ -15,7 +15,7 @@ const Index = () => {
   const [hasSearched, setHasSearched] = useState(false);
   const [showDiscountPopup, setShowDiscountPopup] = useState(false);
   const { machines, loading, error, searchMachines } = useVendingMachines();
-const router = useRouter()
+  const router = useRouter()
   // Show discount popup after 5 seconds
   useEffect(() => {
     const timer = setTimeout(() => {
