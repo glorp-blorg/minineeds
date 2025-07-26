@@ -17,7 +17,6 @@ export interface VendingMachine {
   terminal: string
   location: string
   hours: string
-  supplies: string[]
   rating: number
   status: 'active' | 'maintenance' | 'inactive'
   created_at: string
