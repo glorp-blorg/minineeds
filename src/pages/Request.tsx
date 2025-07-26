@@ -125,17 +125,6 @@ const Request = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="location">Preferred Location (Optional)</Label>
-                  <Input
-                    id="location"
-                    name="location"
-                    value={formData.location}
-                    onChange={handleInputChange}
-                    placeholder="e.g., Terminal A, Gate 15, Food Court"
-                  />
-                </div>
-
-                <div className="space-y-2">
                   <Label htmlFor="message">Additional Details (Optional)</Label>
                   <Textarea
                     id="message"
