@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { MapPin, Send, Shield } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Navigation from "@/components/Navigation";
+import { useLocationRequests } from "@/hooks/useLocationRequests";
 
 const Request = () => {
   const [formData, setFormData] = useState({
@@ -16,29 +17,34 @@ const Request = () => {
     location: "",
     message: ""
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const { loading: isSubmitting, error, submitRequest } = useLocationRequests();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
 
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    toast({
-      title: "Request submitted successfully!",
-      description: "We'll review your request and get back to you within 48 hours.",
-    });
+    const result = await submitRequest(formData);
 
-    setFormData({
-      name: "",
-      email: "",
-      airport: "",
-      location: "",
-      message: ""
-    });
-    setIsSubmitting(false);
+    if (result) {
+      toast({
+        title: "Request submitted successfully!",
+        description: "We'll review your request and get back to you within 48 hours.",
+      });
+
+      setFormData({
+        name: "",
+        email: "",
+        airport: "",
+        location: "",
+        message: ""
+      });
+    } else if (error) {
+      toast({
+        title: "Submission failed",
+        description: error,
+        variant: "destructive"
+      });
+    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -75,6 +81,12 @@ const Request = () => {
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
+                {error && (
+                  <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-md">
+                    <p className="text-destructive text-sm">{error}</p>
+                  </div>
+                )}
+                
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="name">Name *</Label>

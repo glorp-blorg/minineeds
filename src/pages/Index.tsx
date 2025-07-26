@@ -6,12 +6,13 @@ import { MapPin, Clock, Package, Star, Plane, Baby, Search, Gift } from "lucide-
 import Navigation from "@/components/Navigation";
 import SearchBar from "@/components/SearchBar";
 import DiscountPopup from "@/components/DiscountPopup";
+import { useVendingMachines } from "@/hooks/useVendingMachines";
 import heroImage from "@/assets/hero-airport.jpg";
 
 const Index = () => {
-  const [searchResults, setSearchResults] = useState<any[]>([]);
   const [hasSearched, setHasSearched] = useState(false);
   const [showDiscountPopup, setShowDiscountPopup] = useState(false);
+  const { machines, loading, error, searchMachines } = useVendingMachines();
 
   // Show discount popup after 5 seconds
   useEffect(() => {
@@ -22,38 +23,9 @@ const Index = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // Mock vending machine data
-  const mockVendingMachines = [
-    {
-      id: 1,
-      airport: "JFK",
-      terminal: "Terminal 4",
-      location: "Near Gate A12",
-      hours: "24/7",
-      supplies: ["Diapers", "Formula", "Baby Food", "Pacifiers", "Wipes"],
-      rating: 4.8,
-      distance: "0.2 miles from your location"
-    },
-    {
-      id: 2,
-      airport: "JFK",
-      terminal: "Terminal 1",
-      location: "Food Court",
-      hours: "6 AM - 11 PM",
-      supplies: ["Diapers", "Formula", "Wipes", "Baby Bottles"],
-      rating: 4.6,
-      distance: "0.5 miles from your location"
-    }
-  ];
-
-  const handleSearch = (query: string) => {
+  const handleSearch = async (query: string) => {
     setHasSearched(true);
-    // Mock search results based on query
-    if (query.toLowerCase().includes('jfk') || query.toLowerCase().includes('kennedy')) {
-      setSearchResults(mockVendingMachines);
-    } else {
-      setSearchResults([]);
-    }
+    await searchMachines(query);
   };
 
   const featuredSupplies = [
@@ -119,19 +91,45 @@ const Index = () => {
         <section className="py-12 px-4">
           <div className="max-w-6xl mx-auto">
             <h2 className="text-3xl font-bold mb-8">
-              {searchResults.length > 0 ? "Vending Machines Found" : "No Results Found"}
+              {loading ? "Searching..." : machines.length > 0 ? "Vending Machines Found" : "No Results Found"}
             </h2>
             
-            {searchResults.length > 0 ? (
+            {error && (
+              <Card className="mb-6">
+                <CardContent className="py-6">
+                  <p className="text-destructive">Error: {error}</p>
+                </CardContent>
+              </Card>
+            )}
+            
+            {loading ? (
               <div className="grid md:grid-cols-2 gap-6">
-                {searchResults.map((machine) => (
+                {[1, 2].map((i) => (
+                  <Card key={i} className="animate-pulse">
+                    <CardHeader>
+                      <div className="h-6 bg-muted rounded w-3/4"></div>
+                      <div className="h-4 bg-muted rounded w-1/2"></div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        <div className="h-4 bg-muted rounded w-full"></div>
+                        <div className="h-4 bg-muted rounded w-2/3"></div>
+                        <div className="h-10 bg-muted rounded w-full"></div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : machines.length > 0 ? (
+              <div className="grid md:grid-cols-2 gap-6">
+                {machines.map((machine) => (
                   <Card key={machine.id} className="hover:shadow-lg transition-shadow">
                     <CardHeader>
                       <div className="flex justify-between items-start">
                         <div>
                           <CardTitle className="flex items-center gap-2">
                             <Plane className="h-5 w-5 text-primary" />
-                            {machine.airport} - {machine.terminal}
+                            {machine.airport_code} - {machine.terminal}
                           </CardTitle>
                           <CardDescription className="flex items-center gap-2 mt-2">
                             <MapPin className="h-4 w-4" />
@@ -162,7 +160,9 @@ const Index = () => {
                           </div>
                         </div>
                         
-                        <p className="text-sm text-muted-foreground">{machine.distance}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {machine.airport_name}
+                        </p>
                         
                         <Button className="w-full">
                           Get Directions
